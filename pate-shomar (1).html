@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>پته شمار</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--text:#1d1d1b;--muted:#6b6a65;--line:#e2dfd6;--a:#1f6feb;--b:#d9480f;--ok:#2b8a3e;--bad:#c92a2a;--warn:#fff3bf;--warn-t:#7a5b00;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161615;--card:#222221;--text:#f0eee8;--muted:#a09e96;--line:#3a3935;--a:#6ea8fe;--b:#ff922b;--ok:#69db7c;--bad:#ff8787;--warn:#3d3410;--warn-t:#ffe066;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#161615;--card:#222221;--text:#f0eee8;--muted:#a09e96;--line:#3a3935;--a:#6ea8fe;--b:#ff922b;--ok:#69db7c;--bad:#ff8787;--warn:#3d3410;--warn-t:#ffe066;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Vazirmatn,Tahoma,"Segoe UI",sans-serif;line-height:1.6}
+.wrap{max-width:560px;margin:0 auto;padding:16px}
+h1{font-size:1.25rem;margin:4px 0 14px;text-align:center}
+.teams{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.team{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.team.a{border-color:var(--a)}.team.b{border-color:var(--b)}
+.team input{width:100%;text-align:center;border:none;background:transparent;color:var(--text);font:inherit;font-weight:700;font-size:1rem}
+.score{font-size:3rem;font-weight:800;line-height:1.1}
+.a .score{color:var(--a)}.b .score{color:var(--b)}
+.sub{font-size:.8rem;color:var(--muted)}
+.tag{display:inline-block;font-size:.75rem;padding:1px 8px;border-radius:99px;margin-top:4px;background:var(--line);color:var(--muted)}
+.tag.done{background:var(--ok);color:#fff}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px}
+.panel h2{font-size:1rem;margin:0 0 10px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);padding:10px}
+.seg button.sel{color:#fff}.seg button.sel.a{background:var(--a);border-color:var(--a)}.seg button.sel.b{background:var(--b);border-color:var(--b)}
+.bids{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+.bids button.sel{background:var(--text);color:var(--bg)}
+.bids button:disabled{opacity:.3;cursor:not-allowed}
+.warn{background:var(--warn);color:var(--warn-t);border-radius:10px;padding:8px 10px;margin-top:10px;font-size:.88rem}
+.res{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.res button{font-weight:700;color:#fff;border:none}
+.res .ok{background:var(--ok)}.res .no{background:var(--bad)}
+.res button:disabled{opacity:.35;cursor:not-allowed}
+.row2{display:flex;gap:8px;margin-top:12px}.row2 button{flex:1}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{padding:6px;text-align:center;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:500}
+.pos{color:var(--ok)}.neg{color:var(--bad)}
+.win{text-align:center;background:var(--ok);color:#fff;border-radius:14px;padding:16px;margin-top:12px;font-size:1.2rem;font-weight:800}
+.hist{overflow-x:auto}
+.wins{margin-top:8px;font-size:.85rem;font-weight:700;color:var(--muted)}
+.next{display:block;width:100%;margin-top:12px;background:var(--text);color:var(--bg);font-weight:700;border:none}
+.score{transition:transform .2s}
+.row2.three button{font-size:.85rem}
+.credit{text-align:center;margin:26px 0 10px;font-size:1.5rem;font-weight:800;color:var(--a);direction:ltr;letter-spacing:.5px}
+.lock{position:fixed;inset:0;z-index:99999;background:var(--bg);color:var(--text);display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;font-size:1.1rem;line-height:2}
+.lockphone{display:block;margin-top:10px;font-size:1.6rem;font-weight:800;direction:ltr;color:var(--a);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>🃏 پته‌شمار</h1>
+<div class="teams">
+<div class="team a"><input id="nameA" value="تیم ۱" aria-label="نام تیم اول"><div class="score" id="sA">0</div><div class="sub" id="dA"></div><span class="tag" id="tA"></span><div class="wins" id="wA"></div></div>
+<div class="team b"><input id="nameB" value="تیم ۲" aria-label="نام تیم دوم"><div class="score" id="sB">0</div><div class="sub" id="dB"></div><span class="tag" id="tB"></span><div class="wins" id="wB"></div></div>
+</div>
+
+<div id="winBox"></div>
+
+<div class="panel" id="entry">
+<h2>دست جدید</h2>
+<div class="sub" style="margin-bottom:6px">کدام تیم خوانده؟</div>
+<div class="seg" id="who"></div>
+<div class="sub" style="margin:10px 0 0">چند خوانده؟</div>
+<div class="bids" id="bids"></div>
+<div id="note"></div>
+<div class="res">
+<button class="ok" id="made">گرفت ✓</button>
+<button class="no" id="missed">نگرفت ✗</button>
+</div>
+</div>
+
+<div class="panel">
+<h2>تاریخچه</h2>
+<div class="hist"><table><thead><tr><th>#</th><th>خواننده</th><th>خوانده</th><th>نتیجه</th><th id="hA"></th><th id="hB"></th></tr></thead><tbody id="rows"></tbody></table></div>
+<div class="sub" id="empty" style="text-align:center;padding:8px">هنوز دستی ثبت نشده</div>
+</div>
+
+<div class="row2 three">
+<button id="undo">↩︎ برگرداندن دست</button>
+<button id="reset">بازی جدید</button>
+<button id="resetAll">صفر کردن بردها</button>
+</div>
+<div class="credit">develop by sadra</div>
+</div>
+
+<script>
+var WIN=54, KEY="hokm-state-v1";
+var S={names:["تیم ۱","تیم ۲"],hands:[],wins:[0,0],bidder:0,bid:5};
+try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&p.hands){S.names=p.names||S.names;S.hands=p.hands;S.wins=p.wins||[0,0];}}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({names:S.names,hands:S.hands,wins:S.wins}));}catch(e){}}
+function $(id){return document.getElementById(id)}
+function fa(n){return String(n).replace(/\d/g,function(d){return "۰۱۲۳۴۵۶۷۸۹"[d]}).replace("-","−")}
+
+function calc(){
+  var sc=[0,0],made8=[false,false];
+  S.hands.forEach(function(h){
+    sc[h.t]+=h.ok?h.bid:-h.bid;
+    if(h.bid===8&&h.ok)made8[h.t]=true;
+  });
+  return {sc:sc,made8:made8};
+}
+function winner(c){
+  for(var t=0;t<2;t++){if(c.sc[t]>=WIN&&c.made8[t])return t;}
+  return -1;
+}
+// returns {forced:number|null, reason:string}
+function rule(c,t){
+  var dist=WIN-c.sc[t];
+  if(!c.made8[t]&&dist<=8)return {forced:8,reason:S.names[t]+" هنوز ۸ نگرفته و تا برد "+fa(dist)+" امتیاز مانده؛ باید ۸ بخواند."};
+  var o=1-t, dl=WIN-c.sc[o];
+  var lead=c.sc[t]>=c.sc[o]?t:o, dLead=WIN-c.sc[lead];
+  if(dLead<=5){
+    if(t===lead)return {forced:5,reason:S.names[t]+" جلو است و تا برد "+fa(dist)+" امتیاز مانده؛ باید ۵ بخواند."};
+    return {forced:9,reason:S.names[lead]+" تا برد "+fa(dLead)+" امتیاز دارد؛ تیم عقب ("+S.names[t]+") باید ۹ بخواند."};
+  }
+  return {forced:null,reason:""};
+}
+
+function render(){
+  var c=calc(),w=winner(c);
+  $("nameA").value=S.names[0];$("nameB").value=S.names[1];
+  $("sA").textContent=fa(c.sc[0]);$("sB").textContent=fa(c.sc[1]);
+  $("dA").textContent="تا برد: "+fa(Math.max(0,WIN-c.sc[0]));
+  $("dB").textContent="تا برد: "+fa(Math.max(0,WIN-c.sc[1]));
+  [["tA",0],["tB",1]].forEach(function(x){var e=$(x[0]);e.textContent=c.made8[x[1]]?"۸ گرفته ✓":"۸ نگرفته";e.className="tag"+(c.made8[x[1]]?" done":"")});
+  $("wA").textContent="🏆 بردها: "+fa(S.wins[0]);$("wB").textContent="🏆 بردها: "+fa(S.wins[1]);
+  $("hA").textContent=S.names[0];$("hB").textContent=S.names[1];
+
+  $("winBox").innerHTML=w>=0?'<div class="win">🏆 '+esc(S.names[w])+' برنده شد!</div><button class="next" id="next">ثبت برد و شروع بازی بعد</button>':"";
+  if(w>=0){$("next").onclick=function(){S.wins[w]++;S.hands=[];S.bidder=0;render()}}
+  $("entry").style.display=w>=0?"none":"block";
+
+  var r=rule(c,S.bidder);
+  if(r.forced)S.bid=r.forced;
+  else if(S.bid<4||S.bid>13)S.bid=5;
+
+  var who=$("who");who.innerHTML="";
+  [0,1].forEach(function(t){
+    var b=document.createElement("button");
+    b.textContent=S.names[t];b.className=(S.bidder===t?"sel ":"")+(t?"b":"a");
+    b.onclick=function(){S.bidder=t;render()};who.appendChild(b);
+  });
+  var bids=$("bids");bids.innerHTML="";
+  for(var n=4;n<=13;n++){
+    (function(n){
+      var b=document.createElement("button");
+      b.textContent=fa(n);b.className=S.bid===n?"sel":"";
+      b.disabled=!!r.forced&&r.forced!==n;
+      b.onclick=function(){S.bid=n;render()};bids.appendChild(b);
+    })(n);
+  }
+  $("note").innerHTML=r.forced?'<div class="warn">⚠️ '+esc(r.reason)+'</div>':"";
+
+  var tb=$("rows");tb.innerHTML="";
+  var run=[0,0];
+  S.hands.forEach(function(h,i){
+    run[h.t]+=h.ok?h.bid:-h.bid;
+    var tr=document.createElement("tr");
+    tr.innerHTML="<td>"+fa(i+1)+"</td><td>"+esc(S.names[h.t])+"</td><td>"+fa(h.bid)+"</td><td class='"+(h.ok?"pos":"neg")+"'>"+(h.ok?"+":"−")+fa(h.bid)+"</td><td>"+fa(run[0])+"</td><td>"+fa(run[1])+"</td>";
+    tb.appendChild(tr);
+  });
+  $("empty").style.display=S.hands.length?"none":"block";
+  save();
+}
+function esc(s){return String(s).replace(/[&<>"]/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]})}
+function add(ok){S.hands.push({t:S.bidder,bid:S.bid,ok:ok});render()}
+$("made").onclick=function(){add(true)};
+$("missed").onclick=function(){add(false)};
+$("undo").onclick=function(){S.hands.pop();render()};
+$("reset").onclick=function(){if(confirm("بازی جدید شروع شود؟ امتیازها پاک می‌شوند.")){S.hands=[];render()}};
+$("resetAll").onclick=function(){if(confirm("همه چیز شامل تعداد بردها پاک شود؟")){S.hands=[];S.wins=[0,0];render()}};
+$("nameA").oninput=function(){S.names[0]=this.value||"تیم ۱";save()};
+$("nameB").oninput=function(){S.names[1]=this.value||"تیم ۲";save()};
+$("nameA").onchange=$("nameB").onchange=render;
+render();
+
+/* ---- کلید خاموش از راه دور ----
+   KILL_URL را با آدرس فایل متنی خودت پر کن (فقط یک کلمه: on یا off).
+   اگر خالی بماند، چک انجام نمی‌شود. */
+var KILL_URL="https://sadra122333.github.io/patte/status.txt";
+var LOCK_KEY="hokm-locked-v1";
+function showLock(){
+  if($("lockScreen"))return;
+  var d=document.createElement("div");d.id="lockScreen";d.className="lock";
+  d.innerHTML='<div>این نسخه دیگر فعال نیست.<br>برای نسخه‌ی جدید با سازنده تماس بگیر:<a class="lockphone" href="tel:+989179589952">+989179589952</a></div>';
+  document.body.appendChild(d);
+}
+function setLocked(v){try{if(v)localStorage.setItem(LOCK_KEY,"1");else localStorage.removeItem(LOCK_KEY);}catch(e){}}
+function isLocked(){try{return localStorage.getItem(LOCK_KEY)==="1";}catch(e){return false;}}
+function checkKill(){
+  if(!KILL_URL)return;
+  fetch(KILL_URL+(KILL_URL.indexOf("?")<0?"?":"&")+"t="+Date.now(),{cache:"no-store"})
+    .then(function(r){return r.text()})
+    .then(function(t){
+      if(t.trim().toLowerCase()==="off"){setLocked(true);showLock();}
+      else if(t.trim().toLowerCase()==="on"){setLocked(false);var l=$("lockScreen");if(l)l.remove();}
+    })
+    .catch(function(){/* بدون اینترنت: به کار ادامه می‌دهد */});
+}
+if(KILL_URL&&isLocked())showLock();
+checkKill();
+document.addEventListener("visibilitychange",function(){if(!document.hidden)checkKill();});
+</script>
+</body>
+</html>
